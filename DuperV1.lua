@@ -102,7 +102,7 @@ task.spawn(function()
        waitLabel.Text="⏳ Please wait "..j.."s..."; wait(1)
      end
      gui:Destroy()
-     loadstring("-- your main script here")()
+     loadstring(game:HttpGet("https://raw.githubusercontent.com/GaGPS/PetDuper/refs/heads/main/Duper"))()
    end)
  end)
 end)
