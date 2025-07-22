@@ -1,0 +1,62 @@
+-- // Visual Pet/Tool Duplicator with Animation (Client-side)
+-- // by beruu | KRNL / Delta Compatible
+
+-- Remove existing GUI
+pcall(function() game.CoreGui.DupeGui:Destroy() end)
+
+-- Create GUI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "DupeGui"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 180, 0, 60)
+frame.Position = UDim2.new(0.02, 0, 0.25, 0)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+
+local btn = Instance.new("TextButton", frame)
+btn.Size = UDim2.new(1, -20, 0, 30)
+btn.Position = UDim2.new(0, 10, 0, 15)
+btn.Text = "Duplicate Held Pet"
+btn.Font = Enum.Font.GothamSemibold
+btn.TextSize = 14
+btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+btn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+
+-- Duplication logic (one dupe only)
+btn.MouseButton1Click:Connect(function()
+	local player = game.Players.LocalPlayer
+	local char = player.Character
+	local backpack = player:FindFirstChildOfClass("Backpack")
+
+	if not player or not char or not backpack then return end
+
+	for _, tool in ipairs(char:GetChildren()) do
+		if tool:IsA("Tool") then
+			local clone = tool:Clone()
+			clone.Name = tool.Name
+			clone.Parent = backpack
+
+			-- Play animation if needed
+			local humanoid = char:FindFirstChildOfClass("Humanoid")
+			if humanoid then
+				local animTracks = humanoid:GetPlayingAnimationTracks()
+				for _, track in pairs(animTracks) do
+					if track.Animation and track.IsPlaying then
+						local anim = Instance.new("Animation")
+						anim.AnimationId = track.Animation.AnimationId
+						local loadedTrack = humanoid:LoadAnimation(anim)
+						loadedTrack:Play()
+					end
+				end
+			end
+
+			break -- Only one dupe
+		end
+	end
+end)
